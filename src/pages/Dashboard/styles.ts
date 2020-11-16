@@ -15,6 +15,35 @@ export const Container = styled.div`
   }
 `;
 
+export const ConfirmationDialog = styled.div`
+  text-align: center;
+  width: 500px;
+  padding: 40px;
+  background: #312e38;
+  box-shadow: 0 20px 75px rgba(0, 0, 0, 0.23);
+  color: #fff;
+
+  p {
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  button {
+    width: 160px;
+    padding: 10px;
+    border: 1px solid #fff;
+    margin: 10px;
+    cursor: pointer;
+    background: none;
+    color: #fff;
+    font-size: 14px;
+  }
+
+  button + button {
+    background: #ff9000;
+  }
+`;
+
 export const Title = styled.h1`
   font-size: 24px;
   color: #ffffff;
@@ -26,7 +55,7 @@ export const Title = styled.h1`
 
 export const Form = styled.form<FormProps>`
   margin-top: 20px;
-  max-width: 700px;
+  max-width: 960px;
 
   display: flex;
 
@@ -54,7 +83,7 @@ export const Form = styled.form<FormProps>`
   button {
     width: 210px;
     height: 56px;
-    background: #04d361;
+    background: #ff9000;
     border-radius: 0px 5px 5px 0px;
     border: 0px;
     color: #fff;
@@ -62,7 +91,7 @@ export const Form = styled.form<FormProps>`
     transition: background-color 0.2s;
 
     &:hover {
-      background: ${shade(0.2, '#04d361')};
+      background: ${shade(0.2, '#ff9000')};
     }
   }
 `;
@@ -74,19 +103,35 @@ export const Error = styled.span`
 `;
 
 export const Products = styled.div`
-  margin-top: 80px;
-  max-width: 700px;
+  margin-top: 50px;
+  max-width: 960px;
+
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+
+  h1 {
+    text-align: center;
+    width: 100%;
+  }
+
+  > p {
+    text-align: center;
+    width: 100%;
+  }
 
   a {
-    background: #fff;
+    background: #fbf8f7;
     border-radius: 5px;
     width: 100%;
-    padding: 24px;
     display: block;
     text-decoration: none;
+    max-width: 191px;
 
     display: flex;
-    align-items: center;
+    flex-direction: column;
+
     transition: transform 0.2s;
 
     &:hover {
@@ -98,14 +143,19 @@ export const Products = styled.div`
     }
 
     > span {
-      width: 64px;
-      height: 64px;
-      border-radius: 50%;
+      width: 99%;
+      height: 151px;
 
       display: flex;
       place-content: center;
       align-items: center;
-      border: 2px solid #312e38;
+      border: 1px solid #312e38;
+      border-top-left-radius: 5px;
+      border-top-right-radius: 5px;
+
+      background-color: #ffffff;
+
+      margin: 1px;
 
       > svg {
         color: #312e38;
@@ -113,12 +163,13 @@ export const Products = styled.div`
     }
 
     img {
-      width: 64px;
-      height: 64px;
-      border-radius: 50%;
+      width: 100%;
+      height: 100%;
+      border-radius: 3px 3px 0 0;
     }
 
     div {
+      padding-top: 16px;
       margin: 0 16px;
       flex: 1;
 
@@ -128,15 +179,133 @@ export const Products = styled.div`
       }
 
       p {
-        font-size: 18px;
+        font-size: 16px;
         color: #a8a8b3;
         margin-top: 4px;
       }
+
+      .price {
+        color: #ff9000;
+        font-size: 12px;
+      }
     }
 
-    > svg {
+    > button {
       margin-left: auto;
-      color: #cbcbd6;
+      color: #ffff;
+      position: relative;
+      bottom: 55px;
+      right: 10px;
+      border: 2px solid #cbcbd6;
+      background: #cbcbd6;
+      border-radius: 50%;
+      height: 35px;
+      -webkit-filter: drop-shadow(3px 3px 2px rgba(0, 0, 0, 0.7));
+      filter: drop-shadow(3px 3px 2px rgba(0, 0, 0, 0.7));
     }
+  }
+`;
+
+export const DivMenu = styled.button`
+  > ul {
+    line-height: 25px;
+
+    > li {
+      > a {
+        background-color: transparent;
+        color: #ffffff;
+        transform: none;
+
+        &:hover {
+          transform: none;
+        }
+      }
+
+      > ul li {
+        .add-image-button {
+          background: #609ede;
+          color: #fff;
+
+          &:hover {
+            background: ${shade(0.2, '#609ede')};
+          }
+        }
+
+        .edit-button {
+          background: #cab732;
+          color: #fff;
+
+          &:hover {
+            background: ${shade(0.2, '#cab732')};
+          }
+        }
+
+        .delete-button {
+          background: #ad1d1d;
+          color: #fff;
+
+          transition: background-color 0.2s;
+
+          &:hover {
+            background: ${shade(0.2, '#ad1d1d')};
+          }
+        }
+
+        a {
+          display: block;
+          width: 100px;
+          height: 56px;
+          padding-top: 16px;
+        }
+      }
+    }
+  }
+
+  li {
+    list-style: none;
+    position: relative;
+  }
+
+  li li {
+    list-style: none;
+    position: relative;
+  }
+
+  ul ul {
+    position: absolute;
+    visibility: hidden;
+  }
+
+  ul li:hover ul {
+    visibility: visible;
+  }
+
+  a:hover {
+    font-weight: bold;
+  }
+`;
+
+export const Pagination = styled.div`
+  width: 100%;
+  max-width: 960px;
+
+  display: flex;
+  justify-content: center;
+  padding-top: 33px;
+
+  button {
+    background: transparent;
+    border: 0;
+    color: #ffffff;
+    font-size: 32px;
+    transition: transform 0.2s;
+
+    &:hover {
+      transform: translateX(10px);
+    }
+  }
+
+  button + button {
+    padding-left: 10px;
   }
 `;

@@ -1,11 +1,33 @@
-import React, { useState, useEffect, FormEvent } from 'react';
-import { FiChevronRight, FiCameraOff } from 'react-icons/fi';
+import React, { useState, useEffect, FormEvent, useCallback } from 'react';
+import {
+  FiCameraOff,
+  FiMoreVertical,
+  FiTrash2,
+  FiEdit2,
+  FiArrowLeftCircle,
+  FiArrowRightCircle,
+  FiCamera,
+} from 'react-icons/fi';
 import { Link } from 'react-router-dom';
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
+
+import { useToast } from './../../hooks/toast';
+
 import api from './../../services/api';
 
 import logoImg from '../../assets/logo.svg';
 
-import { Container, Title, Form, Products, Error } from './styles';
+import {
+  Container,
+  Title,
+  Form,
+  Products,
+  Error,
+  DivMenu,
+  Pagination,
+  ConfirmationDialog,
+} from './styles';
 
 interface Product {
   brand: string;
@@ -21,17 +43,10 @@ interface Product {
 const Dashboard: React.FC = () => {
   const [newRepo, setNewRepo] = useState('');
   const [inputError, setInputError] = useState('');
-  const [products, setProducts] = useState<Array<Product>>(() => {
-    const storagedRepositories = localStorage.getItem(
-      '@GithubExplorer:repositories'
-    );
+  const [products, setProducts] = useState<Array<Product>>([]);
+  const [page, setPage] = useState<number>(0);
 
-    if (storagedRepositories) {
-      return JSON.parse(storagedRepositories);
-    }
-
-    return [];
-  });
+  const { addToast } = useToast();
 
   useEffect(() => {
     api.get('/products').then((resp) => {
@@ -39,7 +54,60 @@ const Dashboard: React.FC = () => {
     });
   }, []);
 
-  async function handleAddRepository(
+  const fetchPage = useCallback((page) => {
+    const count = 8;
+    api.get(`/products?skip=${page * count}&take=${count}`).then((resp) => {
+      setProducts(resp.data);
+      setPage(page);
+    });
+  }, []);
+
+  const handleConfirmationDelete = useCallback((id: string) => {
+    api
+      .delete(`/products/${id}`)
+      .then((resp) => {
+        addToast({
+          type: 'success',
+          title: 'Remoção realizada',
+          description: 'O produto foi removido.',
+        });
+        fetchPage(page);
+      })
+      .catch((error) => {
+        addToast({
+          type: 'error',
+          title: 'Erro na remoção',
+          description: 'Ocorreu um erro ao remover, tente novamente.',
+        });
+      });
+  }, []);
+
+  const handleDelete = useCallback((product: Product) => {
+    confirmAlert({
+      customUI: ({ onClose }) => {
+        return (
+          <ConfirmationDialog>
+            <h1>Você está certo?</h1>
+            <p>
+              Você realmente gostaria de remover o produto {product.name} da
+              marca {product.brand}?
+            </p>
+            <button onClick={onClose}>Não</button>
+            <button
+              onClick={() => {
+                handleConfirmationDelete(product.id);
+                onClose();
+              }}
+            >
+              Sim, remova-o!
+            </button>
+          </ConfirmationDialog>
+        );
+      },
+    });
+  }, []);
+
+  async function handleAddProduct(
     event: FormEvent<HTMLFormElement>
   ): Promise<void> {
     event.preventDefault();
@@ -52,9 +120,9 @@ const Dashboard: React.FC = () => {
     try {
       const response = await api.get<Product>(`/repos/${newRepo}`);
 
-      const repository = response.data;
+      const product = response.data;
 
-      setProducts([...products, repository]);
+      setProducts([...products, product]);
 
       setNewRepo('');
       setInputError('');
@@ -65,10 +133,10 @@ const Dashboard: React.FC = () => {
 
   return (
     <Container>
-      <img src={logoImg} alt="Github explorer" />
+      <img src={logoImg} alt="GoMarket" />
       <Title>Explore os produtos cadastrados</Title>
 
-      <Form hasError={!!inputError} onSubmit={handleAddRepository}>
+      <Form hasError={!!inputError} onSubmit={handleAddProduct}>
         <input
           value={newRepo}
           onChange={(e) => setNewRepo(e.target.value)}
@@ -80,26 +148,83 @@ const Dashboard: React.FC = () => {
       {inputError && <Error>{inputError}</Error>}
 
       <Products>
-        {products.map((repository) => (
-          <Link key={repository.id} to={`/repository/${repository.id}`}>
-            {repository.image ? (
-              <img
-                src={`${api.defaults.baseURL}/files/${repository.image}`}
-                alt={repository.image}
-              />
-            ) : (
-              <span>
-                <FiCameraOff size={20} />
-              </span>
-            )}
-            <div>
-              <strong>{repository.name}</strong>
-              <p>{repository.price}</p>
-            </div>
-            <FiChevronRight size={20} />
-          </Link>
-        ))}
+        {!products || products.length === 0 ? (
+          <>
+            <h1>Que pena! :((</h1>
+            <br />
+            <p>
+              Nenhum produto encontrado. Mas você poderá cadastrar um novo no
+              botão superior direito.
+            </p>
+          </>
+        ) : (
+          products.map((product) => (
+            <Link key={product.id} to={'#'}>
+              {product.image ? (
+                <img
+                  src={`${api.defaults.baseURL}/files/${product.image}`}
+                  alt={product.image}
+                />
+              ) : (
+                <span>
+                  <FiCameraOff size={20} />
+                </span>
+              )}
+              <div>
+                <strong>{product.brand}</strong>
+                <p>{product.name}</p>
+                <p className="price">R$ {product.price}</p>
+              </div>
+              <DivMenu>
+                <ul>
+                  <li>
+                    <a href="#">
+                      <FiMoreVertical size={30} />
+                    </a>
+                    <ul>
+                      <li>
+                        <Link className="edit-button" key="editButton" to={'#'}>
+                          <FiEdit2 size={20} />
+                          Editar
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          className="add-image-button"
+                          key="addImageButton"
+                          to={'#'}
+                        >
+                          <FiCamera size={20} />
+                          Add foto
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          className="delete-button"
+                          key="editButton"
+                          to={'#'}
+                          onClick={() => handleDelete(product)}
+                        >
+                          <FiTrash2 size={20} />
+                          Excluir
+                        </Link>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </DivMenu>
+            </Link>
+          ))
+        )}
       </Products>
+      <Pagination>
+        <button>
+          <FiArrowLeftCircle onClick={() => fetchPage(page - 1)} />
+        </button>
+        <button>
+          <FiArrowRightCircle onClick={() => fetchPage(page + 1)} />
+        </button>
+      </Pagination>
     </Container>
   );
 };
