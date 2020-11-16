@@ -7,14 +7,16 @@ import {
   FiArrowLeftCircle,
   FiArrowRightCircle,
   FiCamera,
+  FiPlus,
 } from 'react-icons/fi';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
-
 import { useToast } from './../../hooks/toast';
 
 import api from './../../services/api';
+
+import Button from './../../components/Button';
 
 import logoImg from '../../assets/logo.svg';
 
@@ -27,6 +29,7 @@ import {
   DivMenu,
   Pagination,
   ConfirmationDialog,
+  ContainerButtonAdd,
 } from './styles';
 
 interface Product {
@@ -41,10 +44,11 @@ interface Product {
 }
 
 const Dashboard: React.FC = () => {
-  const [newRepo, setNewRepo] = useState('');
+  const [search, setSearch] = useState('');
   const [inputError, setInputError] = useState('');
   const [products, setProducts] = useState<Array<Product>>([]);
   const [page, setPage] = useState<number>(0);
+  const history = useHistory();
 
   const { addToast } = useToast();
 
@@ -54,12 +58,18 @@ const Dashboard: React.FC = () => {
     });
   }, []);
 
-  const fetchPage = useCallback((page) => {
+  const fetchPage = useCallback((page: number, keyword?: string) => {
     const count = 8;
-    api.get(`/products?skip=${page * count}&take=${count}`).then((resp) => {
-      setProducts(resp.data);
-      setPage(page);
-    });
+    api
+      .get(
+        `/products?skip=${page * count}&take=${count}${
+          keyword ? '&keyword=' + keyword : ''
+        }`
+      )
+      .then((resp) => {
+        setProducts(resp.data);
+        setPage(page);
+      });
   }, []);
 
   const handleConfirmationDelete = useCallback((id: string) => {
@@ -107,24 +117,13 @@ const Dashboard: React.FC = () => {
     });
   }, []);
 
-  async function handleAddProduct(
+  async function handleSearchProduct(
     event: FormEvent<HTMLFormElement>
   ): Promise<void> {
     event.preventDefault();
-
-    if (!newRepo) {
-      setInputError('Digite um nome de produto válido!');
-      return;
-    }
-
     try {
-      const response = await api.get<Product>(`/repos/${newRepo}`);
+      fetchPage(0, search);
 
-      const product = response.data;
-
-      setProducts([...products, product]);
-
-      setNewRepo('');
       setInputError('');
     } catch (err) {
       setInputError('Erro na busca por esse produto!');
@@ -132,100 +131,117 @@ const Dashboard: React.FC = () => {
   }
 
   return (
-    <Container>
-      <img src={logoImg} alt="GoMarket" />
-      <Title>Explore os produtos cadastrados</Title>
+    <>
+      <Container>
+        <img src={logoImg} alt="GoMarket" />
+        <Title>Explore os produtos cadastrados</Title>
 
-      <Form hasError={!!inputError} onSubmit={handleAddProduct}>
-        <input
-          value={newRepo}
-          onChange={(e) => setNewRepo(e.target.value)}
-          placeholder="Pesquise pelo nome do produto"
-        />
-        <button type="submit">Pesquisar</button>
-      </Form>
+        <Form hasError={!!inputError} onSubmit={handleSearchProduct}>
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Pesquise pelo nome do produto"
+          />
+          <button type="submit">Pesquisar</button>
+        </Form>
 
-      {inputError && <Error>{inputError}</Error>}
+        {inputError && <Error>{inputError}</Error>}
 
-      <Products>
-        {!products || products.length === 0 ? (
-          <>
-            <h1>Que pena! :((</h1>
-            <br />
-            <p>
-              Nenhum produto encontrado. Mas você poderá cadastrar um novo no
-              botão superior direito.
-            </p>
-          </>
-        ) : (
-          products.map((product) => (
-            <Link key={product.id} to={'#'}>
-              {product.image ? (
-                <img
-                  src={`${api.defaults.baseURL}/files/${product.image}`}
-                  alt={product.image}
-                />
-              ) : (
-                <span>
-                  <FiCameraOff size={20} />
-                </span>
-              )}
-              <div>
-                <strong>{product.brand}</strong>
-                <p>{product.name}</p>
-                <p className="price">R$ {product.price}</p>
-              </div>
-              <DivMenu>
-                <ul>
-                  <li>
-                    <a href="#">
-                      <FiMoreVertical size={30} />
-                    </a>
-                    <ul>
-                      <li>
-                        <Link className="edit-button" key="editButton" to={'#'}>
-                          <FiEdit2 size={20} />
-                          Editar
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          className="add-image-button"
-                          key="addImageButton"
-                          to={'#'}
-                        >
-                          <FiCamera size={20} />
-                          Add foto
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          className="delete-button"
-                          key="editButton"
-                          to={'#'}
-                          onClick={() => handleDelete(product)}
-                        >
-                          <FiTrash2 size={20} />
-                          Excluir
-                        </Link>
-                      </li>
-                    </ul>
-                  </li>
-                </ul>
-              </DivMenu>
-            </Link>
-          ))
-        )}
-      </Products>
-      <Pagination>
-        <button>
-          <FiArrowLeftCircle onClick={() => fetchPage(page - 1)} />
-        </button>
-        <button>
-          <FiArrowRightCircle onClick={() => fetchPage(page + 1)} />
-        </button>
-      </Pagination>
-    </Container>
+        <Products>
+          {!products || products.length === 0 ? (
+            <>
+              <h1>Que pena! :((</h1>
+              <br />
+              <p>
+                Nenhum produto encontrado. Mas você poderá cadastrar um novo no
+                botão inferior direito.
+              </p>
+            </>
+          ) : (
+            products.map((product) => (
+              <Link key={product.id} to={'#'}>
+                {product.image ? (
+                  <img
+                    src={`${api.defaults.baseURL}/files/${product.image}`}
+                    alt={product.image}
+                  />
+                ) : (
+                  <span>
+                    <FiCameraOff size={20} />
+                  </span>
+                )}
+                <div>
+                  <strong>{product.brand}</strong>
+                  <p>{product.name}</p>
+                  <p className="price">R$ {product.price}</p>
+                </div>
+                <DivMenu>
+                  <ul>
+                    <li>
+                      <a href="#">
+                        <FiMoreVertical size={30} />
+                      </a>
+                      <ul>
+                        <li>
+                          <Link
+                            className="edit-button"
+                            key="editButton"
+                            to={'#'}
+                          >
+                            <FiEdit2 size={20} />
+                            Editar
+                          </Link>
+                        </li>
+                        <li>
+                          <Link
+                            className="add-image-button"
+                            key="addImageButton"
+                            to={'#'}
+                          >
+                            <FiCamera size={20} />
+                            Add foto
+                          </Link>
+                        </li>
+                        <li>
+                          <Link
+                            className="delete-button"
+                            key="editButton"
+                            to={'#'}
+                            onClick={() => handleDelete(product)}
+                          >
+                            <FiTrash2 size={20} />
+                            Excluir
+                          </Link>
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                </DivMenu>
+              </Link>
+            ))
+          )}
+        </Products>
+        <Pagination>
+          <button>
+            <FiArrowLeftCircle onClick={() => fetchPage(page - 1)} />
+          </button>
+          <button>
+            <FiArrowRightCircle onClick={() => fetchPage(page + 1)} />
+          </button>
+        </Pagination>
+      </Container>
+      <ContainerButtonAdd>
+        <Button
+          type="button"
+          onClick={() => {
+            history.push('/product');
+          }}
+        >
+          <FiPlus />
+          Cadastrar
+        </Button>
+      </ContainerButtonAdd>
+    </>
   );
 };
 

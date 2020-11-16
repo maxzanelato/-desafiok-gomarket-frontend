@@ -111,6 +111,10 @@ export const Products = styled.div`
   justify-content: space-between;
   flex-wrap: wrap;
 
+  @media only screen and (max-width: 465px) {
+    justify-content: center;
+  }
+
   h1 {
     text-align: center;
     width: 100%;
@@ -225,6 +229,11 @@ export const DivMenu = styled.button`
         .add-image-button {
           background: #609ede;
           color: #fff;
+          width: 145px;
+
+          > svg {
+            margin: 0 10px;
+          }
 
           &:hover {
             background: ${shade(0.2, '#609ede')};
@@ -234,6 +243,11 @@ export const DivMenu = styled.button`
         .edit-button {
           background: #cab732;
           color: #fff;
+          width: 145px;
+
+          > svg {
+            margin: 0 10px;
+          }
 
           &:hover {
             background: ${shade(0.2, '#cab732')};
@@ -243,8 +257,11 @@ export const DivMenu = styled.button`
         .delete-button {
           background: #ad1d1d;
           color: #fff;
+          width: 145px;
 
-          transition: background-color 0.2s;
+          > svg {
+            margin: 0 10px;
+          }
 
           &:hover {
             background: ${shade(0.2, '#ad1d1d')};
@@ -308,4 +325,10 @@ export const Pagination = styled.div`
   button + button {
     padding-left: 10px;
   }
+`;
+
+export const ContainerButtonAdd = styled.div`
+  position: fixed;
+  bottom: 10px;
+  right: 50px;
 `;
