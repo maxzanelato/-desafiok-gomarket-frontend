@@ -186,7 +186,7 @@ const Dashboard: React.FC = () => {
                           <Link
                             className="edit-button"
                             key="editButton"
-                            to={'#'}
+                            to={`/product/${product.id}`}
                           >
                             <FiEdit2 size={20} />
                             Editar

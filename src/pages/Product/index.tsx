@@ -1,10 +1,11 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useRef, useEffect, useState } from 'react';
 import { FiArrowLeft, FiUser, FiTag } from 'react-icons/fi';
 import { MdAttachMoney } from 'react-icons/md';
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/web';
 import * as Yup from 'yup';
 import { Link, useHistory } from 'react-router-dom';
+import { useParams } from 'react-router';
 
 import api from '../../services/api';
 
@@ -30,6 +31,16 @@ const Product: React.FC = () => {
 
   const { addToast } = useToast();
   const history = useHistory();
+  const params = useParams<{ id: string } | null>();
+  const [product, setProduct] = useState({});
+
+  useEffect(() => {
+    if (params?.id) {
+      api.get(`/products/${params.id}`).then((resp) => {
+        setProduct(resp.data);
+      });
+    }
+  }, [params]);
 
   const handleSubmit = useCallback(
     async (data: ProductRegistrationFormData) => {
@@ -46,20 +57,23 @@ const Product: React.FC = () => {
 
         await schema.validate(data, { abortEarly: false });
 
-        await api.post('/products', data);
+        let message = '';
+        if (params?.id) {
+          await api.put(`/products/${params.id}`, { ...product, ...data });
+          message = 'Atualização realizada!';
+        } else {
+          await api.post('/products', data);
+          message = 'Cadastro realizado!';
+        }
 
         addToast({
           type: 'success',
-          title: 'Cadastro realizado!',
+          title: message,
           description: 'Você já pode cadastrar outro!',
         });
 
-        // const fd = new FormData();
-        // fd.append('image', data.image, image.name);
-        // fd.append('_method', 'PATCH');
-        // await api.patch('/products', )
-
         formRef.current?.reset();
+        setProduct({});
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
           const errors = getValidationErrors(err);
@@ -87,7 +101,7 @@ const Product: React.FC = () => {
         <AnimationContainer>
           <img src={logoImg} alt="GoMarket" />
 
-          <Form ref={formRef} initialData={{}} onSubmit={handleSubmit}>
+          <Form ref={formRef} initialData={product} onSubmit={handleSubmit}>
             <h1>Cadastro de produtos</h1>
 
             <Input name="name" icon={FiUser} placeholder="Nome" />
