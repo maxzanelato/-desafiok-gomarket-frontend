@@ -5,6 +5,15 @@ interface FormProps {
   hasError: boolean;
 }
 
+export const Nav = styled.nav`
+  position: fixed;
+  background: #312e38;
+  width: 100%;
+  top: 0;
+  height: 135px;
+  z-index: 99;
+`;
+
 export const Container = styled.div`
   max-width: 960px;
   margin: 0 auto;

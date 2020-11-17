@@ -21,6 +21,7 @@ import Button from './../../components/Button';
 import logoImg from '../../assets/logo.svg';
 
 import {
+  Nav,
   Container,
   Title,
   Form,
@@ -133,7 +134,9 @@ const Dashboard: React.FC = () => {
   return (
     <>
       <Container>
-        <img src={logoImg} alt="GoMarket" />
+        <Nav>
+          <img src={logoImg} width="274px" alt="GoMarket" />
+        </Nav>
         <Title>Explore os produtos cadastrados</Title>
 
         <Form hasError={!!inputError} onSubmit={handleSearchProduct}>
