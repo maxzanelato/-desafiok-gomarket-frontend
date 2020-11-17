@@ -1,44 +1,82 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# GoMarket
 
-## Available Scripts
+[![Build Status](https://travis-ci.org/joemccann/dillinger.svg?branch=master)](https://travis-ci.org/joemccann/dillinger)
 
-In the project directory, you can run:
+Tabela de conteúdos:
 
-### `yarn start`
+   * [Descrição do Projeto](#descrição-do-projeto)
+   * [Instalação](#instalação)
+   * [Como usar](#como-usar)
+      * [Pré requisitos](#pré-requisitos)
+      * [Execução](#execução)
+   * [Tecnologias](#tecnologias)
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+## Descrição do projeto
+GoMarket é um mercado que oferece as opções de cadastro, edição, pesquisa, lista e remoção de produtos. Conta ainda com uma tela de login onde pessoas registradas poderão realizar as operações.
 
-### `yarn test`
+  - CRUD de produtos
+  - Pesquisa de produtos
+  - Login
+  - Registro de usuário
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+ O back-end estará disponível em [Back-end][df1]
 
-### `yarn build`
+## Instalação
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+GoMarket requer requer NodeJS para executar e yarn para as dependências.
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+```sh
+$ cd -desafiok-gomarket-frontend
+$ yarn 
+$ yarn start
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Porém é necessário se atentar aos pré-requisitos antes de executá-lo.
 
-### `yarn eject`
+## Como usar
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+### Pré requisitos
+- O [back-end][df1] estar executando;
+- Ter yarn instalado na máquina;
+- Ter NodeJS instalado na máquina.
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Execução
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+GoMarket requer que siga os passos abaixo para sua execução:
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+- Seguir os comandos abaixo:
+```sh
+$ cd -desafiok-gomarket-frontend
+$ yarn
+$ yarn start
+```
+- Ao final, o sistema irá inicializar na porta 3000.
 
-## Learn More
+## Tecnologias
+As seguintes tecnologias foram utilizadas:
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+| Lib | Descrição |
+| ------ | ------ |
+| react | Biblioteca do ReactJS |
+| react-dom | Biblioteca de acesso ao DOM do ReactJS | 
+| unform/core | Manipulador de formulários |
+| unform/web | Manupulador de formulários para ReactJS |
+| axios | Cliente HTTP | 
+| polished | Efeitos de CSS |
+| react-icons | Ícones do React |
+| react-scripts | Configuração de scripts do React |
+| styled-components | Lib para escrever CSS dentro do Javascript |
+| typescript | Superset da linguagem JavaScript |
+| uuidv4 | Gerador de id |
+| yup | Validador de formulários |
+| prettier | Formatador de código |
+| eslint-plugin-import | Plugin de eslint para import |
+| eslint-plugin-prettier | Plugin eslint para prettier |
+| eslint-import-resolver-typescript | Resolver de arquivos typescript |
+| eslint-config-airbnb-base | Base de configurações de padrão de código do airbnb  |
+| eslint | Formatador de código  |
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+
+
+   [df1]: <https://github.com/maxzanelato/desafiok-gomarket-backend>
