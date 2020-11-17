@@ -32,7 +32,7 @@ const Product: React.FC = () => {
   const history = useHistory();
 
   const handleSubmit = useCallback(
-    async (data: Object) => {
+    async (data: ProductRegistrationFormData) => {
       formRef.current?.setErrors({});
 
       try {
@@ -53,6 +53,11 @@ const Product: React.FC = () => {
           title: 'Cadastro realizado!',
           description: 'Você já pode cadastrar outro!',
         });
+
+        // const fd = new FormData();
+        // fd.append('image', data.image, image.name);
+        // fd.append('_method', 'PATCH');
+        // await api.patch('/products', )
 
         formRef.current?.reset();
       } catch (err) {
@@ -91,7 +96,7 @@ const Product: React.FC = () => {
               type="string"
               name="price"
               icon={MdAttachMoney}
-              placeholder="Preço"
+              placeholder="Preço (ex.: 250.55)"
             />
 
             <Button type="submit">Cadastrar</Button>
