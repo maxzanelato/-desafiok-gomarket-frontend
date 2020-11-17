@@ -10,6 +10,7 @@ Tabela de conteúdos:
       * [Pré requisitos](#pré-requisitos)
       * [Execução](#execução)
    * [Tecnologias](#tecnologias)
+   * [Protótipo navegável](#protótipo-navegável)
 
 
 ## Descrição do projeto
@@ -20,7 +21,7 @@ GoMarket é um mercado que oferece as opções de cadastro, edição, pesquisa, 
   - Login
   - Registro de usuário
 
- O back-end estará disponível em [Back-end][df1]
+ O back-end estará disponível no [link][df1]
 
 ## Instalação
 
@@ -77,6 +78,9 @@ As seguintes tecnologias foram utilizadas:
 | eslint-config-airbnb-base | Base de configurações de padrão de código do airbnb  |
 | eslint | Formatador de código  |
 
+## Protótipo navegável
+O protótipo navegável está presente em [link][df2]. Basta clicar no botão de "play" no canto superior direito e estará apto para navegar entre as telas.
 
 
    [df1]: <https://github.com/maxzanelato/desafiok-gomarket-backend>
+   [df2]: <https://www.figma.com/file/2IVlBzEQ9NAD22JxWTdsiN/GoMarket?node-id=53%3A27>
