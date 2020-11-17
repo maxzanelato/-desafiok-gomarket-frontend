@@ -40,7 +40,7 @@ export const AnimationContainer = styled.div`
   animation: ${appearFromRight} 1s;
 
   form {
-    margin: 80px 0;
+    margin: 40px 0;
     width: 340px;
     text-align: center;
 
@@ -85,4 +85,36 @@ export const Background = styled.div`
   flex: 1;
   background: url(${signInBackgroundImg}) no-repeat center;
   background-size: cover;
+`;
+
+export const FileUpload = styled.div`
+  padding-top: 20px;
+
+  input[type='file'] {
+    display: none;
+  }
+
+  label {
+    padding: 20px 10px;
+    width: 339px;
+    background-color: #4c4b4b;
+    color: #fff;
+    text-transform: uppercase;
+    text-align: center;
+    display: block;
+    margin-top: 10px;
+    cursor: pointer;
+    border-radius: 8px;
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    transition: color background-color 0.2s;
+
+    &:hover {
+      background-color: ${shade(0.2, '#4c4b4b')};
+      color: ${shade(0.2, '#fff')};
+    }
+  }
 `;

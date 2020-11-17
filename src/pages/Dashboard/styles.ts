@@ -177,7 +177,7 @@ export const Products = styled.div`
 
     img {
       width: 100%;
-      height: 100%;
+      height: 153px;
       border-radius: 3px 3px 0 0;
     }
 
